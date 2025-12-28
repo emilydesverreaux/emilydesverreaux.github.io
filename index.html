@@ -19,9 +19,18 @@
       --shadow:#e49bbf;
       --grid:#ffd8ec;
       --focus:#2b8cff;
+
+      /* glow + sparkle variables that we’ll swap via JS */
+      --glowA:#ffffff;
+      --glowB:var(--bg);
+      --glowC:#ffe7f4;
+
+      --sparkA: radial-gradient(circle at 30% 30%, var(--hot) 0 8px, transparent 9px);
+      --sparkB: radial-gradient(circle at 70% 45%, var(--hot2) 0 10px, transparent 11px);
+      --sparkC: radial-gradient(circle at 40% 80%, var(--hot) 0 7px, transparent 8px);
+      --sparkD: radial-gradient(circle at 80% 75%, var(--hot2) 0 6px, transparent 7px);
     }
 
-    /* pixel-ish vibe without external assets */
     html,body{height:100%;}
     body{
       margin:0;
@@ -29,7 +38,7 @@
       background:
         linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/28px 28px,
         linear-gradient(var(--grid) 1px, transparent 1px) 0 0/28px 28px,
-        radial-gradient(1200px 800px at 30% 10%, #ffffff 0%, var(--bg) 55%, #ffe7f4 100%);
+        radial-gradient(1200px 800px at 30% 10%, var(--glowA) 0%, var(--glowB) 55%, var(--glowC) 100%);
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       image-rendering: pixelated;
       -webkit-font-smoothing: none;
@@ -52,6 +61,7 @@
       justify-content:space-between;
       gap:12px;
       margin-bottom: 18px;
+      flex-wrap:wrap;
     }
 
     .badge{
@@ -65,6 +75,18 @@
       border-radius: 14px;
     }
 
+    /* clickable heart (easter egg trigger) */
+    .heart-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:0;
+      padding:0;
+      margin:0;
+      background:transparent;
+      cursor:pointer;
+    }
+    .heart-btn:active{ transform: translate(1px,1px); }
     .pixel-heart{
       width:18px; height:18px;
       background: var(--hot);
@@ -109,13 +131,13 @@
 
     .sparkles{
       position:absolute; inset:-20px -20px auto auto;
-      width:220px; height:220px;
+      width:240px; height:240px;
       opacity:.25;
       background:
-        radial-gradient(circle at 30% 30%, var(--hot) 0 8px, transparent 9px),
-        radial-gradient(circle at 70% 45%, var(--hot2) 0 10px, transparent 11px),
-        radial-gradient(circle at 40% 80%, var(--hot) 0 7px, transparent 8px),
-        radial-gradient(circle at 80% 75%, var(--hot2) 0 6px, transparent 7px);
+        var(--sparkA),
+        var(--sparkB),
+        var(--sparkC),
+        var(--sparkD);
       filter: saturate(1.2);
       transform: rotate(10deg);
       pointer-events:none;
@@ -145,7 +167,15 @@
       margin:0;
       font-size: 15px;
       color: var(--muted);
-      max-width: 70ch;
+      max-width: 75ch;
+    }
+
+    .hero-row{
+      display:flex;
+      gap:16px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      margin-top:14px;
     }
 
     .cta-row{
@@ -216,6 +246,15 @@
       border-radius: 999px;
       padding:6px 10px;
       box-shadow: 3px 3px 0 var(--shadow);
+      white-space:nowrap;
+    }
+
+    .divider{
+      height:3px;
+      background: var(--ink);
+      opacity:.12;
+      margin: 12px 0;
+      border-radius: 999px;
     }
 
     .footer{
@@ -231,12 +270,114 @@
       color: var(--muted);
     }
 
-    .divider{
-      height:3px;
-      background: var(--ink);
-      opacity:.12;
-      margin: 12px 0;
+    /* ---------- Pixel avatar (CSS-only) ---------- */
+    .avatar-card{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      border:3px solid var(--ink);
+      background: rgba(255,255,255,.85);
+      box-shadow: 8px 8px 0 var(--shadow);
+      border-radius: 18px;
+      padding:14px;
+      max-width: 420px;
+    }
+    .avatar{
+      width:88px; height:88px;
+      border:3px solid var(--ink);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 6px 6px 0 var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .avatar::before{
+      content:"";
+      position:absolute; inset:0;
+      /* simple pixel-ish face: hair (blonde), skin, eyes (blue) */
+      background:
+        /* bangs */
+        linear-gradient(#f5dc7a 0 0) 0 0/100% 26% no-repeat,
+        /* hair sides */
+        linear-gradient(#f5dc7a 0 0) 0 26%/18% 60% no-repeat,
+        linear-gradient(#f5dc7a 0 0) 82% 26%/18% 60% no-repeat,
+
+        /* face */
+        linear-gradient(#ffd9c6 0 0) 18% 26%/64% 68% no-repeat,
+
+        /* eyes whites */
+        linear-gradient(#fff 0 0) 30% 48%/18% 10% no-repeat,
+        linear-gradient(#fff 0 0) 52% 48%/18% 10% no-repeat,
+
+        /* irises (blue) */
+        linear-gradient(#4aa3ff 0 0) 36% 50%/6% 6% no-repeat,
+        linear-gradient(#4aa3ff 0 0) 58% 50%/6% 6% no-repeat,
+
+        /* pupils */
+        linear-gradient(#2b1a24 0 0) 38% 51%/3% 3% no-repeat,
+        linear-gradient(#2b1a24 0 0) 60% 51%/3% 3% no-repeat,
+
+        /* mouth */
+        linear-gradient(#ff77bb 0 0) 44% 70%/14% 4% no-repeat,
+
+        /* shirt */
+        linear-gradient(#ffb8dd 0 0) 0 78%/100% 22% no-repeat;
+    }
+    .avatar-meta strong{display:block;}
+    .avatar-meta .tiny{margin-top:3px;}
+
+    /* ---------- XP bars (vibes) ---------- */
+    .xp{
+      display:grid;
+      gap:10px;
+    }
+    .xp-row{
+      display:grid;
+      grid-template-columns: 140px 1fr 46px;
+      gap:10px;
+      align-items:center;
+    }
+    @media (max-width:520px){
+      .xp-row{ grid-template-columns: 1fr; }
+      .xp-row .pct{ justify-self:start; }
+    }
+    .xp-label{ color: var(--ink); font-weight:700; }
+    .bar{
+      height:14px;
+      border:2px solid var(--ink);
       border-radius: 999px;
+      background: rgba(255,224,239,.6);
+      box-shadow: 3px 3px 0 var(--shadow);
+      overflow:hidden;
+    }
+    .fill{
+      height:100%;
+      width: var(--w, 60%);
+      background: linear-gradient(90deg, var(--hot2), var(--hot));
+      border-right:2px solid rgba(58,27,43,.25);
+    }
+    .pct{ color: var(--muted); font-size:12px; justify-self:end; }
+
+    /* tiny toast */
+    .toast{
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      padding: 10px 12px;
+      border:3px solid var(--ink);
+      background: var(--white);
+      box-shadow: 6px 6px 0 var(--shadow);
+      border-radius: 14px;
+      font-size: 12px;
+      color: var(--muted);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
@@ -245,7 +386,9 @@
   <div class="wrap">
     <div class="topbar">
       <div class="badge" aria-label="Site badge">
-        <span class="pixel-heart" aria-hidden="true"></span>
+        <button class="heart-btn" id="heartBtn" type="button" aria-label="Click for sparkle mode">
+          <span class="pixel-heart" aria-hidden="true"></span>
+        </button>
         <strong>Emily Desverreaux</strong>
         <span class="tiny">• Android dev</span>
       </div>
@@ -253,6 +396,7 @@
       <nav class="nav" aria-label="Primary navigation">
         <a class="chip" href="#about">About</a>
         <a class="chip" href="#projects">Projects</a>
+        <a class="chip" href="#uses">Uses</a>
         <a class="chip" href="#skills">Skills</a>
         <a class="chip" href="#contact">Contact</a>
       </nav>
@@ -261,17 +405,40 @@
     <header class="hero">
       <div class="sparkles" aria-hidden="true"></div>
       <span class="kicker">👾 cute • pink • pixel-ish • very online</span>
-      <h1>Hi, I’m Emily.</h1>
-      <p class="sub">
-        I’m a software engineer focused on <strong>Android</strong> (Compose, Kotlin, architecture).
-        I like building clean UI, shipping real things, and keeping it just a little bit silly.
-      </p>
 
-      <div class="cta-row">
-        <!-- Replace these links with yours -->
-        <a class="btn primary" href="https://www.linkedin.com/emily-desverreaux" target="_blank" rel="noreferrer">✨ LinkedIn</a>
-        <a class="btn" href="https://github.com/emilydesverreaux" target="_blank" rel="noreferrer">💾 GitHub</a>
-        <a class="btn" href="#projects">🧩 See projects</a>
+      <div class="hero-row">
+        <div style="flex:1 1 420px; min-width:260px;">
+          <h1>Hi, I’m Emily.</h1>
+          <p class="sub">
+            I’m a software engineer focused on <strong>Android</strong> (Compose, Kotlin, architecture).
+            I like building clean UI, shipping real things, and keeping it just a little bit silly.
+          </p>
+
+          <div class="cta-row">
+            <!-- FIXED LinkedIn URL format -->
+            <a class="btn primary" href="https://www.linkedin.com/in/emily-desverreaux/" target="_blank" rel="noreferrer">✨ LinkedIn</a>
+            <a class="btn" href="https://github.com/emilydesverreaux" target="_blank" rel="noreferrer">💾 GitHub</a>
+            <a class="btn" href="resume.pdf" target="_blank" rel="noreferrer">📄 Resume</a>
+            <a class="btn" href="#projects">🧩 See projects</a>
+          </div>
+
+          <p class="tiny" style="margin:12px 0 0;">
+            psst: click the heart for sparkle modes ✨
+          </p>
+        </div>
+
+        <div class="avatar-card" aria-label="Pixel avatar card">
+          <div class="avatar" role="img" aria-label="Pixel avatar of Emily"></div>
+          <div class="avatar-meta">
+            <strong>Pixel Emily</strong>
+            <div class="tiny">blonde hair • blue eyes • good at shipping</div>
+            <div class="tagrow" style="margin-top:8px;">
+              <span class="tag">Compose enjoyer</span>
+              <span class="tag">UI polish</span>
+              <span class="tag">✨</span>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -279,26 +446,48 @@
       <section id="about" class="card half">
         <h2>About me</h2>
         <p class="sub" style="margin-top:0;">
-          Android engineer who cares about UI polish, maintainability, and teamwork. Outside of coding:
-          painting, Pilates/yoga, cooking, travel, and generally being a structured chaos goblin.
+          Android engineer who cares about UI polish, maintainability, and teamwork.
+          Outside of coding: painting, Pilates/yoga, cooking, travel, and structured chaos goblinry.
         </p>
         <div class="divider"></div>
         <p class="tiny">
-          Built with vanilla HTML/CSS so it loads fast + hosts free on GitHub Pages.
+          Built with vanilla HTML/CSS/JS so it loads fast + hosts free on GitHub Pages.
         </p>
       </section>
 
       <section id="skills" class="card half">
-        <h2>Skills</h2>
-        <ul class="list">
-          <li>Kotlin, Jetpack Compose, Coroutines / Flow</li>
-          <li>Architecture: MVVM, unidirectional data flow, modularization</li>
-          <li>Testing + debugging: JUnit, UI tests, logging/metrics</li>
-          <li>Collaboration: API contracts, cross-functional delivery</li>
-        </ul>
-        <div class="tagrow" aria-label="Skill tags">
-          <span class="tag">Kotlin</span><span class="tag">Compose</span><span class="tag">Android</span>
-          <span class="tag">Architecture</span><span class="tag">Testing</span><span class="tag">UI systems</span>
+        <h2>Skill XP bars (vibes, not science)</h2>
+        <div class="xp" aria-label="Vibe skill bars">
+          <div class="xp-row">
+            <div class="xp-label">Kotlin</div>
+            <div class="bar" aria-hidden="true"><div class="fill" style="--w: 90%"></div></div>
+            <div class="pct">lvl 9</div>
+          </div>
+          <div class="xp-row">
+            <div class="xp-label">Jetpack Compose</div>
+            <div class="bar" aria-hidden="true"><div class="fill" style="--w: 86%"></div></div>
+            <div class="pct">lvl 8</div>
+          </div>
+          <div class="xp-row">
+            <div class="xp-label">Architecture</div>
+            <div class="bar" aria-hidden="true"><div class="fill" style="--w: 80%"></div></div>
+            <div class="pct">lvl 8</div>
+          </div>
+          <div class="xp-row">
+            <div class="xp-label">Testing / Debugging</div>
+            <div class="bar" aria-hidden="true"><div class="fill" style="--w: 72%"></div></div>
+            <div class="pct">lvl 7</div>
+          </div>
+          <div class="xp-row">
+            <div class="xp-label">Pixel Aesthetic</div>
+            <div class="bar" aria-hidden="true"><div class="fill" style="--w: 99%"></div></div>
+            <div class="pct">max</div>
+          </div>
+        </div>
+
+        <div class="tagrow" aria-label="Skill tags" style="margin-top:12px;">
+          <span class="tag">Coroutines</span><span class="tag">Flow</span><span class="tag">MVVM</span>
+          <span class="tag">UDF</span><span class="tag">Modularization</span><span class="tag">UI systems</span>
         </div>
       </section>
 
@@ -314,37 +503,140 @@
             <p class="tiny" style="margin:0 0 10px;">
               Collaborative novelty art software that visualizes chaotic behavior in a playful way.
             </p>
-            <a class="chip" href="https://wordpress.cs.vt.edu/ccs2020f/2020/12/13/mosaic/" target="_blank" rel="noreferrer">Visit ↗</a>
+            <a class="chip" href="http://pathsaic.herokuapp.com/" target="_blank" rel="noreferrer">Live ↗</a>
           </article>
 
           <article class="card third" style="margin:0;">
             <h2 style="font-size:16px;margin:0 0 8px;">Android UI work</h2>
             <p class="tiny" style="margin:0 0 10px;">
-              To be filled out...
+              Compose components, architecture patterns, and generally making UI feel expensive.
             </p>
-            <span class="chip" title="Replace with a real link">Link me ✍️</span>
+            <span class="chip" title="Replace with a real link">Add link ✍️</span>
+          </article>
+
+          <article class="card third" style="margin:0;">
+            <h2 style="font-size:16px;margin:0 0 8px;">Tiny experiments</h2>
+            <p class="tiny" style="margin:0 0 10px;">
+              Little side quests: prototypes, memory games, weird art tools, etc.
+            </p>
+            <span class="chip" title="Replace with a real link">Soon™</span>
           </article>
         </div>
       </section>
 
-      <section id="contact" class="card">
+      <section id="uses" class="card half">
+        <h2>Uses</h2>
+        <p class="sub" style="margin-top:0;">Tools I like using (because the vibes matter):</p>
+        <ul class="list">
+          <li>Android Studio (with way too many tabs open)</li>
+          <li>Kotlin + Jetpack Compose</li>
+          <li>Gradle + modularization when it helps</li>
+          <li>Figma (for “what if I just…” moments)</li>
+          <li>JUnit, screenshots, logs, and a suspicious amount of debugging</li>
+        </ul>
+        <div class="tagrow">
+          <span class="tag">Android Studio</span>
+          <span class="tag">Kotlin</span>
+          <span class="tag">Compose</span>
+          <span class="tag">Gradle</span>
+          <span class="tag">Figma</span>
+        </div>
+      </section>
+
+      <section id="contact" class="card half">
         <h2>Contact</h2>
         <p class="sub" style="margin-top:0;">
-          Easiest: DM on LinkedIn or email me.
+          Easiest: DM on LinkedIn or grab my resume.
         </p>
         <div class="cta-row">
-          <!-- Replace email -->
           <a class="btn primary" href="mailto:emilydesverreaux@gmail.com">📮 Email me</a>
-          <a class="btn" href="https://www.linkedin.com/in/emily-desverreaux" target="_blank" rel="noreferrer">💗 LinkedIn</a>
+          <a class="btn" href="https://www.linkedin.com/in/emily-desverreaux/" target="_blank" rel="noreferrer">💗 LinkedIn</a>
+          <a class="btn" href="resume.pdf" target="_blank" rel="noreferrer">📄 Resume</a>
         </div>
         <p class="footer">© <span id="year"></span> Emily • made with pink pixels</p>
       </section>
     </main>
   </div>
 
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
   <script>
-    // tiny nicety: auto year
+    // auto year
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // sparkle mode easter egg: click heart to cycle patterns + background glow
+    const heartBtn = document.getElementById("heartBtn");
+    const toast = document.getElementById("toast");
+
+    const modes = [
+      {
+        name: "Sparkle Mode: Candy",
+        glow: ["#ffffff", "var(--bg)", "#ffe7f4"],
+        sparks: [
+          "radial-gradient(circle at 30% 30%, var(--hot) 0 8px, transparent 9px)",
+          "radial-gradient(circle at 70% 45%, var(--hot2) 0 10px, transparent 11px)",
+          "radial-gradient(circle at 40% 80%, var(--hot) 0 7px, transparent 8px)",
+          "radial-gradient(circle at 80% 75%, var(--hot2) 0 6px, transparent 7px)"
+        ]
+      },
+      {
+        name: "Sparkle Mode: Bubblegum",
+        glow: ["#fff7fb", "#ffe0ef", "#ffd0e6"],
+        sparks: [
+          "radial-gradient(circle at 20% 35%, var(--hot2) 0 9px, transparent 10px)",
+          "radial-gradient(circle at 60% 25%, var(--hot) 0 6px, transparent 7px)",
+          "radial-gradient(circle at 55% 75%, var(--hot2) 0 7px, transparent 8px)",
+          "radial-gradient(circle at 85% 60%, var(--hot) 0 11px, transparent 12px)"
+        ]
+      },
+      {
+        name: "Sparkle Mode: Stardust",
+        glow: ["#ffffff", "#ffe7f4", "#fff1f8"],
+        sparks: [
+          "radial-gradient(circle at 25% 25%, var(--hot) 0 5px, transparent 6px)",
+          "radial-gradient(circle at 75% 30%, var(--hot2) 0 5px, transparent 6px)",
+          "radial-gradient(circle at 35% 80%, var(--hot2) 0 5px, transparent 6px)",
+          "radial-gradient(circle at 85% 75%, var(--hot) 0 5px, transparent 6px)"
+        ]
+      },
+      {
+        name: "Sparkle Mode: Neon Pixie",
+        glow: ["#ffffff", "#ffeef7", "#ffd8ec"],
+        sparks: [
+          "radial-gradient(circle at 15% 55%, var(--hot) 0 12px, transparent 13px)",
+          "radial-gradient(circle at 55% 18%, var(--hot2) 0 8px, transparent 9px)",
+          "radial-gradient(circle at 72% 78%, var(--hot) 0 7px, transparent 8px)",
+          "radial-gradient(circle at 92% 48%, var(--hot2) 0 10px, transparent 11px)"
+        ]
+      }
+    ];
+
+    let modeIndex = 0;
+
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      window.clearTimeout(showToast._t);
+      showToast._t = window.setTimeout(() => toast.classList.remove("show"), 1200);
+    }
+
+    function applyMode(i){
+      const m = modes[i];
+      const r = document.documentElement.style;
+      r.setProperty("--glowA", m.glow[0]);
+      r.setProperty("--glowB", m.glow[1]);
+      r.setProperty("--glowC", m.glow[2]);
+      r.setProperty("--sparkA", m.sparks[0]);
+      r.setProperty("--sparkB", m.sparks[1]);
+      r.setProperty("--sparkC", m.sparks[2]);
+      r.setProperty("--sparkD", m.sparks[3]);
+      showToast(m.name);
+    }
+
+    heartBtn.addEventListener("click", () => {
+      modeIndex = (modeIndex + 1) % modes.length;
+      applyMode(modeIndex);
+    });
   </script>
 </body>
 </html>
